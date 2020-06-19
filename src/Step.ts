@@ -1,4 +1,4 @@
-/// <reference path="./Samples/Sample.ts" />
+/// <reference path="./Sample.ts" />
 
 
 namespace App{
@@ -28,10 +28,15 @@ namespace App{
             return this.row;
         }
 
-        draw(container: HTMLElement){
+        draw(container: HTMLElement, fourth: number){
             let step = document.createElement('div');
             step.className = "step";
             step.id = "step_" + this.row + "_" + this.position;
+
+            if(fourth % 2){
+                step.classList.add('even-fourth');
+            }
+
             container.append(step);
         }
 
@@ -49,6 +54,7 @@ namespace App{
                     self.steps_repo.add(self.position, sample);
                     self.enabled = true;
                     self.getDomElement().classList.add("step-enabled");
+                    console.log(self.getDomElement());
                 } else {
                     self.steps_repo.remove(self.position, sample);
                     self.enabled = false;

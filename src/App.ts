@@ -1,11 +1,13 @@
-/// <reference path="./Samples/Sample.ts" />
+/// <reference path="./Sample.ts" />
 /// <reference path="./Step.ts" />
 
 namespace App{
     export class Application{
         step_samples_repo: StepSamplesRepo;
+        step_delay: number;
         constructor() {
             this.step_samples_repo = new StepSamplesRepo();
+            this.step_delay = 187.5;
         }
 
         bootstrap(){
@@ -29,7 +31,17 @@ namespace App{
 
                 for(let j=1; j<17; j++){
                     let new_step = new Step(i, j, track_name, this.step_samples_repo);
-                    new_step.draw(new_track);
+                    let fourth = 1;
+                    if(j < 5){
+                        fourth = 1;
+                    } else if(j>=5 && j<9){
+                        fourth = 2;
+                    } else if(j>=9 && j<13){
+                        fourth = 3;
+                    } else {
+                        fourth = 4;
+                    }
+                    new_step.draw(new_track,fourth);
                 }
                 new_track.prepend(track_label);
                 sequence_container.append(new_track);
@@ -40,6 +52,21 @@ namespace App{
         sequence(){
             let self = this;
             for(let k=1;k<17;k++){
+                // Highlight beat
+                setTimeout(function () {
+                    let l = 1;
+                    for(let track in Tracks){
+                        let this_step = <HTMLElement>document.getElementById("step_"+l+"_"+k);
+                        this_step.classList.add('active');
+                        setTimeout(function () {
+                            this_step.classList.remove('active');
+                        }, self.step_delay);
+
+                        l++;
+                    }
+                }, self.step_delay * k);
+
+                // Play beat
                 setTimeout(function () {
                     let samples = self.step_samples_repo.get(k);
                     if(samples){
@@ -50,7 +77,7 @@ namespace App{
                     if(k === 16){
                         self.sequence();
                     }
-                }, 187.5 * k)
+                }, self.step_delay * k)
             }
         }
 
