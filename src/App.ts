@@ -71,7 +71,9 @@ namespace App{
                     let samples = self.step_samples_repo.get(k);
                     if(samples){
                         for(let l=0;l<samples.length;l++){
-                            new Audio("res/samples/"+samples[l].getFile()).play();
+                            let audio = new Audio();
+                            audio.src = "res/samples/"+samples[l].getFile();
+                            audio.play().then();
                         }
                     }
                     if(k === 16){

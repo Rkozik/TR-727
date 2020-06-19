@@ -155,7 +155,9 @@ var App;
                     var samples = self.step_samples_repo.get(k);
                     if (samples) {
                         for (var l = 0; l < samples.length; l++) {
-                            new Audio("res/samples/" + samples[l].getFile()).play();
+                            var audio = new Audio();
+                            audio.src = "res/samples/" + samples[l].getFile();
+                            audio.play().then();
                         }
                     }
                     if (k === 16) {
