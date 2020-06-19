@@ -32,7 +32,7 @@ declare namespace App {
         constructor(row: number, position: number, track: Tracks, steps_repo: StepSamplesRepo);
         getPosition(): number;
         getRow(): number;
-        draw(container: HTMLElement): void;
+        draw(container: HTMLElement, fourth: number): void;
         getDomElement(): Element;
         handleClick(): void;
         enableEvents(): void;
@@ -41,6 +41,7 @@ declare namespace App {
 declare namespace App {
     class Application {
         step_samples_repo: StepSamplesRepo;
+        step_delay: number;
         constructor();
         bootstrap(): void;
         sequence(): void;
@@ -67,15 +68,5 @@ declare namespace App {
     enum TempoRange {
         MINIMUM = 1,
         MAXIMUM = 255
-    }
-}
-declare namespace App {
-    class SamplesRepo {
-        sample_repo: Map<Tracks, Sample>;
-        constructor();
-        add(name: Tracks, sample: Sample): void;
-        remove(name: Tracks): void;
-        get(name: Tracks): Sample | undefined;
-        getAll(): Map<Tracks, Sample>;
     }
 }

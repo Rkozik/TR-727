@@ -49,10 +49,13 @@ var App;
         Step.prototype.getRow = function () {
             return this.row;
         };
-        Step.prototype.draw = function (container) {
+        Step.prototype.draw = function (container, fourth) {
             var step = document.createElement('div');
             step.className = "step";
             step.id = "step_" + this.row + "_" + this.position;
+            if (fourth % 2) {
+                step.classList.add('even-fourth');
+            }
             container.append(step);
         };
         Step.prototype.getDomElement = function () {
@@ -68,6 +71,7 @@ var App;
                     self.steps_repo.add(self.position, sample);
                     self.enabled = true;
                     self.getDomElement().classList.add("step-enabled");
+                    console.log(self.getDomElement());
                 }
                 else {
                     self.steps_repo.remove(self.position, sample);
@@ -94,6 +98,7 @@ var App;
     var Application = (function () {
         function Application() {
             this.step_samples_repo = new App.StepSamplesRepo();
+            this.step_delay = 187.5;
         }
         Application.prototype.bootstrap = function () {
             var sequences = document.createElement('div');
@@ -109,7 +114,20 @@ var App;
                 track_label.innerText = track_name;
                 for (var j = 1; j < 17; j++) {
                     var new_step = new App.Step(i, j, track_name, this.step_samples_repo);
-                    new_step.draw(new_track);
+                    var fourth = 1;
+                    if (j < 5) {
+                        fourth = 1;
+                    }
+                    else if (j >= 5 && j < 9) {
+                        fourth = 2;
+                    }
+                    else if (j >= 9 && j < 13) {
+                        fourth = 3;
+                    }
+                    else {
+                        fourth = 4;
+                    }
+                    new_step.draw(new_track, fourth);
                 }
                 new_track.prepend(track_label);
                 sequence_container.append(new_track);
@@ -120,6 +138,20 @@ var App;
             var self = this;
             var _loop_1 = function (k) {
                 setTimeout(function () {
+                    var l = 1;
+                    var _loop_2 = function (track) {
+                        var this_step = document.getElementById("step_" + l + "_" + k);
+                        this_step.classList.add('active');
+                        setTimeout(function () {
+                            this_step.classList.remove('active');
+                        }, self.step_delay);
+                        l++;
+                    };
+                    for (var track in App.Tracks) {
+                        _loop_2(track);
+                    }
+                }, self.step_delay * k);
+                setTimeout(function () {
                     var samples = self.step_samples_repo.get(k);
                     if (samples) {
                         for (var l = 0; l < samples.length; l++) {
@@ -129,7 +161,7 @@ var App;
                     if (k === 16) {
                         self.sequence();
                     }
-                }, 187.5 * k);
+                }, self.step_delay * k);
             };
             for (var k = 1; k < 17; k++) {
                 _loop_1(k);
@@ -207,27 +239,5 @@ var App;
         TempoRange[TempoRange["MINIMUM"] = 1] = "MINIMUM";
         TempoRange[TempoRange["MAXIMUM"] = 255] = "MAXIMUM";
     })(TempoRange = App.TempoRange || (App.TempoRange = {}));
-})(App || (App = {}));
-var App;
-(function (App) {
-    var SamplesRepo = (function () {
-        function SamplesRepo() {
-            this.sample_repo = new Map();
-        }
-        SamplesRepo.prototype.add = function (name, sample) {
-            this.sample_repo.set(name, sample);
-        };
-        SamplesRepo.prototype.remove = function (name) {
-            this.sample_repo.delete(name);
-        };
-        SamplesRepo.prototype.get = function (name) {
-            return this.sample_repo.get(name);
-        };
-        SamplesRepo.prototype.getAll = function () {
-            return this.sample_repo;
-        };
-        return SamplesRepo;
-    }());
-    App.SamplesRepo = SamplesRepo;
 })(App || (App = {}));
 //# sourceMappingURL=App.js.map
